@@ -1,0 +1,21 @@
+name: Dependency audit chain inspection
+on:
+  pull_request:
+  push:
+    branches: [master]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --global npm@6.14.18
+      - run: npm ci --ignore-scripts --no-audit
+      - name: Collect dependency advisories without blocking tested code
+        run: npm audit --json > audit.json || true
+      - name: Print actionable dependency paths and patched ranges
+        run: node script/security/report_dependency_audit.js audit.json
