@@ -1,6 +1,5 @@
 const js = require('@eslint/js');
 const globals = require('globals');
-const jest = require('eslint-plugin-jest');
 const importPlugin = require('eslint-plugin-import');
 
 module.exports = [
@@ -18,7 +17,6 @@ module.exports = [
     },
     plugins: {
       import: importPlugin,
-      jest,
     },
     rules: {
       ...importPlugin.configs.recommended.rules,
@@ -28,5 +26,10 @@ module.exports = [
       'arrow-body-style': 'off',
       'no-loop-func': 'off',
     },
+  },
+  {
+    // Existing Fibonacci test intentionally uses imprecise number literals.
+    files: ['src/algorithms/math/fibonacci/__test__/fibonacciNth.test.js'],
+    rules: { 'no-loss-of-precision': 'off' },
   },
 ];
